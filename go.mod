@@ -1,8 +1,6 @@
-module open-utils
+module github.com/arezooq/open-utils
 
 go 1.24.6
-
-require github.com/jinzhu/gorm v1.9.16
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
