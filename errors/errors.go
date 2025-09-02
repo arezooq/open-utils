@@ -3,9 +3,9 @@ package errors
 import "net/http"
 
 type AppError struct {
-	Code string
+	Code    string
 	Message string
-	Status int
+	Status  int
 }
 
 func (e *AppError) Error() string {
@@ -17,8 +17,10 @@ func New(code, message string, status int) *AppError {
 }
 
 var (
-	ErrNotFound = New("NOT_FOUND", "Resource not found", http.StatusNotFound)
+	ErrNotFound     = New("NOT_FOUND", "Resource not found", http.StatusNotFound)
 	ErrUnauthorized = New("UNAUTHORIZED", "Resource not found", http.StatusNotFound)
-	ErrBadRequest = New("BAD_REQUEST", "Invalud request", http.StatusBadRequest)
-	ErrInternal = New("INTERNAL_ERROR", "Internal server error", http.StatusInternalServerError)
+	ErrBadRequest   = New("BAD_REQUEST", "Invalud request", http.StatusBadRequest)
+	ErrInternal     = New("INTERNAL_ERROR", "Internal server error", http.StatusInternalServerError)
+	ErrDuplicate    = New("DUPLICATE", "Duplicate resource", http.StatusConflict)
+	ErrValidation   = New("VALIDATION_ERROR", "Validation failed", http.StatusUnprocessableEntity)
 )
