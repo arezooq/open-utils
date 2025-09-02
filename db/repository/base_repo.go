@@ -9,12 +9,12 @@ type BasePostgresRepository[T any] struct {
 }
 
 // Create new record
-func (r *BasePostgresRepository[T]) Create(entity *T) (*gorm.DB, error) {
+func (r *BasePostgresRepository[T]) Create(entity *T) (*T, error) {
 	result := r.DB.Create(entity)
 	if result.Error != nil {
-		return result, result.Error
+		return nil, result.Error
 	}
-	return result, nil
+	return entity, nil
 }
 
 // Get by id
