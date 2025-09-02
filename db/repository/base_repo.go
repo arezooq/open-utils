@@ -18,13 +18,15 @@ func (r *BasePostgresRepository[T]) Create(entity *T) (*gorm.DB, error) {
 }
 
 // Get by id
-func (r *BasePostgresRepository[T]) GetById(id uint, entity *T) (*gorm.DB, error) {
-	result := r.DB.First(entity, id)
+func (r *BasePostgresRepository[T]) GetById(id uint) (*T, error) {
+	var entity T
+	result := r.DB.First(&entity, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return result, nil
+	return &entity, nil
 }
+
 
 // Get all
 func (r *BasePostgresRepository[T]) GetAll(entities *[]T) error {
