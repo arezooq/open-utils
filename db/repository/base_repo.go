@@ -27,18 +27,30 @@ func (r *BasePostgresRepository[T]) GetById(id uint) (*T, error) {
 	return &entity, nil
 }
 
-
 // Get all
-func (r *BasePostgresRepository[T]) GetAll(entities *[]T) error {
-	return r.DB.Find(entities).Error
+func (r *BasePostgresRepository[T]) GetAll() ([]T, error) {
+	var entities []T
+	result := r.DB.Find(entities)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return entities, nil
 }
 
 // Update
-func (r *BasePostgresRepository[T]) Update(entity *T) error {
-	return r.DB.Save(entity).Error
+func (r *BasePostgresRepository[T]) Update(entity *T) (*T, error) {
+	result := r.DB.Save(entity)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return entity, nil
 }
 
 // Delete
 func (r *BasePostgresRepository[T]) Delete(entity *T) error {
-	return r.DB.Delete(entity).Error
+	result := r.DB.Delete(entity)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
