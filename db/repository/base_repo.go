@@ -38,10 +38,17 @@ func (r *BasePostgresRepository[T]) GetAll() ([]T, error) {
 }
 
 // Update
-func (r *BasePostgresRepository[T]) UpdateByID(id uint, updates map[string]interface{}) error {
+func (r *BasePostgresRepository[T]) Update(id uint, updates map[string]any) (*T, error) {
 	var entity T
 	result := r.DB.Model(&entity).Where("id = ?", id).Updates(updates)
-	return result.Error
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if err := r.DB.First(&entity, id).Error; err != nil {
+        return nil, err
+    }
+	return &entity, nil
 }
 
 // Delete
