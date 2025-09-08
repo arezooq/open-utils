@@ -23,4 +23,6 @@ var (
 	ErrInternal     = New("INTERNAL_ERROR", "Internal server error", http.StatusInternalServerError)
 	ErrDuplicate    = New("DUPLICATE", "Duplicate resource", http.StatusConflict)
 	ErrValidation   = New("VALIDATION_ERROR", "Validation failed", http.StatusUnprocessableEntity)
+	// Redis
+	ErrRedis        = New("REDIS_ERROR", "Redis operation failed", http.StatusInternalServerError)
 )
