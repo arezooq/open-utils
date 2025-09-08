@@ -17,6 +17,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/uuid v1.6.0
 	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/joho/godotenv v1.5.1
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.30.2
 )
