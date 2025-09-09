@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/arezooq/open-utils/errors"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -42,7 +43,7 @@ func (r *BasePostgresRepository[T]) GetAll() ([]T, error) {
 }
 
 // Update
-func (r *BasePostgresRepository[T]) Update(id uint, updates map[string]any) (*T, error) {
+func (r *BasePostgresRepository[T]) Update(id uuid.UUID, updates map[string]any) (*T, error) {
 	var entity T
 	result := r.DB.Model(&entity).Where("id = ?", id).Updates(updates)
 	if result.Error != nil {
