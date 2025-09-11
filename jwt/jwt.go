@@ -10,6 +10,10 @@ import (
 	"github.com/arezooq/open-utils/errors"
 )
 
+type CustomClaims struct {
+    UserID uuid.UUID
+}
+
 func GenerateAccessToken(userID uuid.UUID) (string, error) {
 	err := godotenv.Load(".env")
 
@@ -58,4 +62,18 @@ func GenerateRefreshToken(userID uuid.UUID) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func ValidateRefreshToken(tokenStr string) (*CustomClaims, error) {
+    token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+        return []byte(os.Getenv("REFRESH_SECRET")), nil
+    })
+    if err != nil || !token.Valid {
+        return nil, err
+    }
+
+    claims := token.Claims.(jwt.MapClaims)
+    return &CustomClaims{
+        UserID: uuid.MustParse(claims["user_id"].(string)),
+    }, nil
 }
