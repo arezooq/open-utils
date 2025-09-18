@@ -10,6 +10,10 @@ type BasePostgresRepository[T any] struct {
 	DB *gorm.DB
 }
 
+func NewBasePostgresRepository[T any](db *gorm.DB) *BasePostgresRepository[T] {
+	return &BasePostgresRepository[T]{DB: db}
+}
+
 // Create new record
 func (r *BasePostgresRepository[T]) Create(entity *T) (*T, error) {
 	result := r.DB.Create(entity)
