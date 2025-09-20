@@ -13,11 +13,8 @@ type BasePostgresRepository[T any] struct {
 	DB *gorm.DB
 }
 
-func NewBasePostgresRepository[T any]() (*BasePostgresRepository[T], error) {
-	dsn := os.Getenv("POSTGRES_URL")
-	if dsn == "" {
-        return nil, errors.ErrInternal
-    }
+func NewBasePostgresRepository[T any](dsn string) (*BasePostgresRepository[T], error) {
+	
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
