@@ -2,8 +2,6 @@ package repository
 
 import (
 	"context"
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/arezooq/open-utils/errors"
@@ -15,19 +13,10 @@ type BaseRedisRepository struct {
 	ctx    context.Context
 }
 
-func NewBaseRedisRepository() *BaseRedisRepository {
-	db, _ := strconv.Atoi(os.Getenv("REDIS_DB"))
-
-	client := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_HOST") + ":" + os.Getenv("REDIS_PORT"),
-		Password: os.Getenv("REDIS_PASSWORD"),
-		DB:       db,
-		PoolSize: 10,
-	})
-
+func NewBaseRedisRepository(client *redis.Client, ctx context.Context) *BaseRedisRepository {
 	return &BaseRedisRepository{
 		client: client,
-		ctx:    context.Background(),
+		ctx:    ctx,
 	}
 }
 func (r *BaseRedisRepository) Set(key string, value interface{}, ttl time.Duration) error {
