@@ -1,26 +1,13 @@
 package repository
 
-import (
-	"os"
-
+import(
 	"github.com/arezooq/open-utils/errors"
 	"github.com/google/uuid"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type BasePostgresRepository[T any] struct {
 	DB *gorm.DB
-}
-
-func NewBasePostgresRepository[T any](dsn string) (*BasePostgresRepository[T], error) {
-	
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		return nil, err
-	}
-
-	return &BasePostgresRepository[T]{DB: db}, nil
 }
 
 // Create new record

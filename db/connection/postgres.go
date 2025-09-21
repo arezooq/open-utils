@@ -3,9 +3,9 @@ package connection
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
+	"github.com/arezooq/open-utils/errors"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -14,28 +14,15 @@ import (
 var DB *gorm.DB
 
 type DBConfig struct {
-	Host     string
-	Port     string
-	User     string
-	Password string
-	DBName   string
-	SSLMode  string
+		Host string
+		Port string
+		User string
+		Password string
+		DBName string
+		SSLMode string
 }
 
-func LoadConfig() DBConfig {
-	return DBConfig{
-		Host:     getEnv("DB_HOST", "localhost"),
-		Port:     getEnv("DB_PORT", "5433"),
-		User:     getEnv("DB_USER", "postgres"),
-		Password: getEnv("DB_PASSWORD", "postgres"),
-		DBName:   getEnv("DB_NAME", "open_utils"),
-		SSLMode:  getEnv("DB_SSLMODE", "disable"),
-	}
-}
-
-func ConnectDB() *gorm.DB {
-	cfg := LoadConfig()
-
+func ConnectDB(cfg DBConfig) (*gorm.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=UTC",
 		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName, cfg.SSLMode,
@@ -50,7 +37,7 @@ func ConnectDB() *gorm.DB {
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatalf("Failed to get db instance: %v", err)
+		return nil, errors.New("Failed to get db instance: %v", err.Error(), 500)
 	}
 
 	// Connection pool config
@@ -60,13 +47,5 @@ func ConnectDB() *gorm.DB {
 
 	log.Println("Connected to PostgreSQL with GORM successfully")
 
-	return db
-}
-
-
-func getEnv(key, fallback string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
-	}
-	return fallback
+	return db, nil
 }
