@@ -1,6 +1,9 @@
 package nats
 
-import "github.com/nats-io/nats.go"
+import (
+	"github.com/arezooq/open-utils/errors"
+	"github.com/nats-io/nats.go"
+)
 
 type NATSClient struct {
 	Conn *nats.Conn
@@ -10,12 +13,12 @@ type NATSClient struct {
 func ConnectNATS(url string) (*NATSClient, error) {
 	nc, err := nats.Connect(url)
 	if err != nil {
-		return nil, err
+		return nil, errors.ErrNATSConnect
 	}
 
 	js, err := nc.JetStream()
 	if err != nil {
-		return nil, err
+		return nil, errors.ErrNATSJetStream
 	}
 
 	return &NATSClient{Conn: nc, Js: js}, nil
