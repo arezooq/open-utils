@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/arezooq/open-utils/errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,3 +30,15 @@ func Error(c *gin.Context, status int, code string, msg string, meta map[string]
 		},
 	})
 }
+
+func FromAppError(c *gin.Context, appErr *errors.AppError, meta map[string]string) {
+	c.JSON(appErr.Status, Response{
+		Success: false,
+		Error: gin.H{
+			"code":    appErr.Code,
+			"message": appErr.Message,
+			"meta":    meta,
+		},
+	})
+}
+
