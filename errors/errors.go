@@ -24,6 +24,7 @@ var (
 	ErrInternal     = New("INTERNAL_ERROR", "Internal server error", http.StatusInternalServerError)
 	ErrDuplicate    = New("DUPLICATE", "Duplicate resource", http.StatusConflict)
 	ErrValidation   = New("VALIDATION_ERROR", "Validation failed", http.StatusUnprocessableEntity)
+	ErrInvalidateInput = New("INVALID_INPUT", "Input validation error", http.StatusBadRequest)
 
 	// dependency
 	ErrRedisConnect   = New("REDIS_CONNECT_ERROR", "Failed to connect to Redis", http.StatusInternalServerError)
