@@ -42,7 +42,7 @@ func (r *BasePostgresRepository[T]) GetAll() ([]T, error) {
 }
 
 // Update
-func (r *BasePostgresRepository[T]) Update(id string, updates *T) (*T, error) {
+func (r *BasePostgresRepository[T]) Update(id string, updates map[string]any) (*T, error) {
     var existing T
     if err := r.DB.First(&existing, "id = ?", id).Error; err != nil {
         if err == gorm.ErrRecordNotFound {
