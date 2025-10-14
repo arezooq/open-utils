@@ -2,7 +2,7 @@ package repository
 
 import (
 	"github.com/arezooq/open-utils/errors"
-	"github.com/arezooq/open-utils/pagination"
+	"github.com/arezooq/open-utils/api"
 	"gorm.io/gorm"
 )
 
@@ -33,27 +33,33 @@ func (r *BasePostgresRepository[T]) GetById(id string) (*T, error) {
 }
 
 // Get all
-func (r *BasePostgresRepository[T]) GetAll(p *pagination.Params) ([]T, int64, error) {
+func (r *BasePostgresRepository[T]) GetAll(
+	p *api.Params,
+	filters []api.Filter,
+	searches []api.Search,
+	orders []api.Order,
+) ([]T, int64, error) {
 	var entities []T
-	var	total int64
-
+	var total int64
 	model := new(T)
 
-	if err := r.DB.Model(model).Count(&total).Error; err != nil {
+	db := r.DB.Model(model)
+
+	db = api.ApplyFilters[T](db, filters, searches)
+    db = api.ApplyOrder[T](db, orders)
+
+	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, errors.ErrInternal
 	}
 
-	result := r.DB.Model(model).
-		Limit(p.Limit).
-		Offset(p.Offset).
-		Find(&entities)
-
+	result := db.Limit(p.Limit).Offset(p.Offset).Find(&entities)
 	if result.Error != nil {
 		return nil, 0, errors.ErrInternal
 	}
 
 	return entities, total, nil
 }
+
 
 
 // Update
