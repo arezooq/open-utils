@@ -1,6 +1,6 @@
 package repository
 
-import(
+import (
 	"github.com/arezooq/open-utils/errors"
 	"gorm.io/gorm"
 )
@@ -42,18 +42,23 @@ func (r *BasePostgresRepository[T]) GetAll() ([]T, error) {
 }
 
 // Update
-func (r *BasePostgresRepository[T]) Update(id string, updates map[string]any) (*T, error) {
-	var entity T
-	result := r.DB.Model(&entity).Where("id = ?", id).Updates(updates)
-	if result.Error != nil {
-		return nil, errors.ErrInternal
-	}
+func (r *BasePostgresRepository[T]) Update(id string, updates *T) (*T, error) {
+    var existing T
+    if err := r.DB.First(&existing, "id = ?", id).Error; err != nil {
+        if err == gorm.ErrRecordNotFound {
+            return nil, errors.ErrNotFound
+        }
+        return nil, errors.ErrInternal
+    }
 
-	if err := r.DB.First(&entity, id).Error; err != nil {
-		return nil, errors.ErrNotFound
-	}
-	return &entity, nil
+    result := r.DB.Model(&existing).Updates(updates)
+    if result.Error != nil {
+        return nil, errors.ErrInternal
+    }
+
+    return &existing, nil
 }
+
 
 // Delete
 func (r *BasePostgresRepository[T]) Delete(id string) error {
