@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/arezooq/open-utils/errors"
+	"github.com/arezooq/open-utils/pagination"
 	"gorm.io/gorm"
 )
 
@@ -32,14 +33,28 @@ func (r *BasePostgresRepository[T]) GetById(id string) (*T, error) {
 }
 
 // Get all
-func (r *BasePostgresRepository[T]) GetAll() ([]T, error) {
+func (r *BasePostgresRepository[T]) GetAll(p *pagination.Params) ([]T, int64, error) {
 	var entities []T
-	result := r.DB.Find(&entities)
-	if result.Error != nil {
-		return nil, errors.ErrInternal
+	var	total int64
+
+	model := new(T)
+
+	if err := r.DB.Model(model).Count(&total).Error; err != nil {
+		return nil, 0, errors.ErrInternal
 	}
-	return entities, nil
+
+	result := r.DB.Model(model).
+		Limit(p.Limit).
+		Offset(p.Offset).
+		Find(&entities)
+
+	if result.Error != nil {
+		return nil, 0, errors.ErrInternal
+	}
+
+	return entities, total, nil
 }
+
 
 // Update
 func (r *BasePostgresRepository[T]) Update(id string, updates map[string]any) (*T, error) {
