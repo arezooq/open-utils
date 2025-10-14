@@ -45,20 +45,27 @@ func (r *BasePostgresRepository[T]) GetAll(
 
 	db := r.DB.Model(model)
 
-	db = api.ApplyFilters(db, filters, searches)
-    db = api.ApplyOrder(db, orders)
+	// Apply filters
+	db = api.ApplyFilters(db, filters)
 
+	// Apply search
+	db = api.ApplySearch(db, searches)
+
+	// Count total before pagination
 	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, errors.ErrInternal
 	}
 
-	result := db.Limit(p.Limit).Offset(p.Offset).Find(&entities)
+	// Apply order and pagination
+	db = api.ApplyOrder(db, orders)
+	result := db.Limit(int(p.Limit)).Offset(int(p.Offset)).Find(&entities)
 	if result.Error != nil {
 		return nil, 0, errors.ErrInternal
 	}
 
 	return entities, total, nil
 }
+
 
 
 
