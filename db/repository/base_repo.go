@@ -2,7 +2,6 @@ package repository
 
 import(
 	"github.com/arezooq/open-utils/errors"
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -20,9 +19,9 @@ func (r *BasePostgresRepository[T]) Create(entity *T) (*T, error) {
 }
 
 // Get by id
-func (r *BasePostgresRepository[T]) GetById(id uint) (*T, error) {
+func (r *BasePostgresRepository[T]) GetById(id string) (*T, error) {
 	var entity T
-	result := r.DB.First(&entity, id)
+	result := r.DB.Where("id = ?", id).First(&entity)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
 			return nil, errors.ErrNotFound
@@ -43,7 +42,7 @@ func (r *BasePostgresRepository[T]) GetAll() ([]T, error) {
 }
 
 // Update
-func (r *BasePostgresRepository[T]) Update(id uuid.UUID, updates map[string]any) (*T, error) {
+func (r *BasePostgresRepository[T]) Update(id string, updates map[string]any) (*T, error) {
 	var entity T
 	result := r.DB.Model(&entity).Where("id = ?", id).Updates(updates)
 	if result.Error != nil {
@@ -57,9 +56,9 @@ func (r *BasePostgresRepository[T]) Update(id uuid.UUID, updates map[string]any)
 }
 
 // Delete
-func (r *BasePostgresRepository[T]) Delete(id uint) error {
+func (r *BasePostgresRepository[T]) Delete(id string) error {
 	var entity T
-	result := r.DB.Delete(&entity, id)
+	result := r.DB.Where("id = ?", id).Delete(&entity, id)
 	
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
