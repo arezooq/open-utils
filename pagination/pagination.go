@@ -1,23 +1,24 @@
 package pagination
 
 import (
+	"math"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Params struct {
-	Page       int64 `json:"page"`
-	Limit      int64 `json:"limit"`
-	Offset     int64 `json:"offset"`
+	Page       int   `json:"page"`
+	Limit      int   `json:"limit"`
+	Offset     int   `json:"offset"`
 	Total      int64 `json:"total,omitempty"`
 	TotalPages int64 `json:"total_pages,omitempty"`
 }
 
 // NewFromRequest creates pagination params directly from a gin.Context
 func NewFromRequest(c *gin.Context) *Params {
-	page, _ := strconv.ParseInt(c.DefaultQuery("page", "1"), 10, 64)
-	limit, _ := strconv.ParseInt(c.DefaultQuery("limit", "10"), 10, 64)
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 
 	if page < 1 {
 		page = 1
@@ -38,7 +39,7 @@ func NewFromRequest(c *gin.Context) *Params {
 // SetTotal sets total count and calculates total pages
 func (p *Params) SetTotal(total int64) {
 	p.Total = total
-	p.TotalPages = total / p.Limit
+	p.TotalPages = int64(math.Ceil(float64(total) / float64(p.Limit)))
 }
 
 // JSON formats the pagination result
