@@ -34,7 +34,7 @@ func (r *BasePostgresRepository[T]) GetById(id string) (*T, error) {
 
 // Get all
 func (r *BasePostgresRepository[T]) GetAll(
-	p *api.Params,
+	p *api.PaginationParams,
 	filters []api.Filter,
 	searches []api.Search,
 	orders []api.Order,
@@ -45,8 +45,8 @@ func (r *BasePostgresRepository[T]) GetAll(
 
 	db := r.DB.Model(model)
 
-	db = api.ApplyFilters[T](db, filters, searches)
-    db = api.ApplyOrder[T](db, orders)
+	db = api.ApplyFilters(db, filters, searches)
+    db = api.ApplyOrder(db, orders)
 
 	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, errors.ErrInternal
