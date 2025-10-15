@@ -23,6 +23,12 @@ type Response struct {
 	Error   interface{} `json:"error,omitempty"`
 }
 
+// ErrorResponse standard error model for Swagger
+type ErrorResponse struct {
+	Code    string `json:"code" example:"INVALID_INPUT"`
+	Message string `json:"message" example:"Input validation error"`
+}
+
 func New(c *gin.Context, service, version string) *Request {
 	lang := c.GetHeader("Accept-Language")
 	if lang == "" {
