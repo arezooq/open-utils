@@ -7,7 +7,6 @@ import (
 
 	"github.com/arezooq/open-utils/api"
 	"github.com/arezooq/open-utils/errors"
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -69,8 +68,8 @@ func ExtractUserIDFromToken(tokenStr string) (string, error) {
 }
 
 // ExtractTokenFromHeader
-func ExtractTokenFromHeader(c *gin.Context, req *api.Request,) (string, error) {
-	authHeader := c.GetHeader("Authorization")
+func ExtractTokenFromHeader(req *api.Request) (string, error) {
+	authHeader := req.Ctx.GetHeader("Authorization")
 	if authHeader == "" {
 		return "", errors.ErrMissingToken
 	}
