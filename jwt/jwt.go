@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/arezooq/open-utils/api"
 	"github.com/arezooq/open-utils/errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -68,7 +69,7 @@ func ExtractUserIDFromToken(tokenStr string) (string, error) {
 }
 
 // ExtractTokenFromHeader
-func ExtractTokenFromHeader(c *gin.Context) (string, error) {
+func ExtractTokenFromHeader(c *gin.Context, req *api.Request,) (string, error) {
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
 		return "", errors.ErrMissingToken
@@ -78,6 +79,7 @@ func ExtractTokenFromHeader(c *gin.Context) (string, error) {
 	if len(parts) != 2 || parts[0] != "Bearer" {
 		return "", errors.ErrInvalidToken
 	}
+	req.Token = parts[1]
 
-	return parts[1], nil
+	return req.Token, nil
 }

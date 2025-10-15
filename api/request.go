@@ -13,6 +13,7 @@ type Request struct {
 	Lang    string
 	Service string
 	Version string
+	Token   string
 }
 
 type Response struct {
