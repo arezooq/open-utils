@@ -2,8 +2,11 @@ package jwt
 
 import (
 	"os"
+	"strings"
 	"time"
 
+	"github.com/arezooq/open-utils/errors"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -62,4 +65,19 @@ func ExtractUserIDFromToken(tokenStr string) (string, error) {
 		return "", err
 	}
 	return claims.UserID, nil
+}
+
+// ExtractTokenFromHeader
+func ExtractTokenFromHeader(c *gin.Context) (string, error) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		return "", errors.ErrMissingToken
+	}
+
+	parts := strings.Split(authHeader, " ")
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return "", errors.ErrInvalidToken
+	}
+
+	return parts[1], nil
 }

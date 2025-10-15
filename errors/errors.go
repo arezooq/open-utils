@@ -18,21 +18,23 @@ func New(code, message string, status int) *AppError {
 
 var (
 	// common
-	ErrNotFound     = New("NOT_FOUND", "Resource not found", http.StatusNotFound)
-	ErrUnauthorized = New("UNAUTHORIZED", "Resource not found", http.StatusNotFound)
-	ErrBadRequest   = New("BAD_REQUEST", "Invalid request", http.StatusBadRequest)
-	ErrInternal     = New("INTERNAL_ERROR", "Internal server error", http.StatusInternalServerError)
-	ErrDuplicate    = New("DUPLICATE", "Duplicate resource", http.StatusConflict)
-	ErrValidation   = New("VALIDATION_ERROR", "Validation failed", http.StatusUnprocessableEntity)
+	ErrNotFound        = New("NOT_FOUND", "Resource not found", http.StatusNotFound)
+	ErrUnauthorized    = New("UNAUTHORIZED", "Resource not found", http.StatusNotFound)
+	ErrBadRequest      = New("BAD_REQUEST", "Invalid request", http.StatusBadRequest)
+	ErrInternal        = New("INTERNAL_ERROR", "Internal server error", http.StatusInternalServerError)
+	ErrDuplicate       = New("DUPLICATE", "Duplicate resource", http.StatusConflict)
+	ErrValidation      = New("VALIDATION_ERROR", "Validation failed", http.StatusUnprocessableEntity)
 	ErrInvalidateInput = New("INVALID_INPUT", "Input validation error", http.StatusBadRequest)
+	ErrMissingToken    = New("MISSING_TOKEN", "Authorization token is missing", http.StatusUnauthorized)
+	ErrInvalidToken    = New("INVALID_TOKEN", "Authorization token is invalid", http.StatusUnauthorized)
 
 	// dependency
 	ErrRedisConnect   = New("REDIS_CONNECT_ERROR", "Failed to connect to Redis", http.StatusInternalServerError)
-    ErrRedisOperation = New("REDIS_OPERATION_ERROR", "Redis operation failed", http.StatusInternalServerError)
+	ErrRedisOperation = New("REDIS_OPERATION_ERROR", "Redis operation failed", http.StatusInternalServerError)
 
-    ErrNATSConnect    = New("NATS_CONNECT_ERROR", "Failed to connect to NATS", http.StatusInternalServerError)
-    ErrNATSJetStream  = New("NATS_JETSTREAM_ERROR", "Failed to init JetStream", http.StatusInternalServerError)
+	ErrNATSConnect   = New("NATS_CONNECT_ERROR", "Failed to connect to NATS", http.StatusInternalServerError)
+	ErrNATSJetStream = New("NATS_JETSTREAM_ERROR", "Failed to init JetStream", http.StatusInternalServerError)
 
-    ErrDBConnect      = New("DB_CONNECT_ERROR", "Failed to connect to database", http.StatusInternalServerError)
-    ErrDBQuery        = New("DB_QUERY_ERROR", "Database query failed", http.StatusInternalServerError)
+	ErrDBConnect = New("DB_CONNECT_ERROR", "Failed to connect to database", http.StatusInternalServerError)
+	ErrDBQuery   = New("DB_QUERY_ERROR", "Database query failed", http.StatusInternalServerError)
 )
