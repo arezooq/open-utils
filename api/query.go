@@ -2,12 +2,16 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type Filter struct {
 	Field string      `json:"field"`
+	Op    string      `json:"op"`
 	Value interface{} `json:"value"`
 }
 
@@ -49,10 +53,28 @@ func NewQueryFromRequest(c *gin.Context) *QueryParams {
 
 func ApplyFilters(db *gorm.DB, filters []Filter) *gorm.DB {
 	for _, f := range filters {
-		db = db.Where(f.Field+" = ?", f.Value)
+		switch strings.ToLower(f.Op) {
+		case "in":
+			db = db.Where(fmt.Sprintf("%s IN ?", f.Field), f.Value)
+		case "ne", "!=":
+			db = db.Where(fmt.Sprintf("%s != ?", f.Field), f.Value)
+		case "gt":
+			db = db.Where(fmt.Sprintf("%s > ?", f.Field), f.Value)
+		case "lt":
+			db = db.Where(fmt.Sprintf("%s < ?", f.Field), f.Value)
+		case "gte":
+			db = db.Where(fmt.Sprintf("%s >= ?", f.Field), f.Value)
+		case "lte":
+			db = db.Where(fmt.Sprintf("%s <= ?", f.Field), f.Value)
+		case "like":
+			db = db.Where(fmt.Sprintf("%s ILIKE ?", f.Field), "%"+fmt.Sprint(f.Value)+"%")
+		default:
+			db = db.Where(fmt.Sprintf("%s = ?", f.Field), f.Value)
+		}
 	}
 	return db
 }
+
 
 func ApplySearch(db *gorm.DB, searches []Search) *gorm.DB {
 	for _, s := range searches {
